@@ -1555,5 +1555,56 @@ renderAll();
   });
 })();
 </script>
+<script>
+(async()=>{
+const U=SUPABASE_URL;
+const K=SUPABASE_ANON_KEY;
+const ID=1;
+
+async function syncToSupabase(){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k) data[k]=localStorage.getItem(k);
+  }
+
+  await fetch(`${U}/rest/v1/app_state?id=eq.${ID}`,{
+    method:'PATCH',
+    headers:{
+      apikey:K,
+      Authorization:`Bearer ${K}`,
+      'Content-Type':'application/json',
+      Prefer:'return=minimal'
+    },
+    body:JSON.stringify({
+      data:data,
+      updated_at:new Date().toISOString()
+    })
+  });
+}
+
+async function syncFromSupabase(){
+  const r=await fetch(`${U}/rest/v1/app_state?id=eq.${ID}&select=data`,{
+    headers:{
+      apikey:K,
+      Authorization:`Bearer ${K}`
+    }
+  });
+
+  const rows=await r.json();
+  if(!rows[0]?.data) return;
+
+  const data=rows[0].data;
+  Object.entries(data).forEach(([k,v])=>{
+    localStorage.setItem(k,v);
+  });
+}
+
+window.addEventListener('online',syncFromSupabase);
+setInterval(syncToSupabase,5000);
+
+})();
+</script>
+
 </body>
 </html>
