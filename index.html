@@ -1550,6 +1550,18 @@ renderAll();
     nav.addEventListener('click',()=>setTimeout(sync,40)); sync();
   });
 })();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = 'https://nmbgkbbbjtshyhcrkkjw.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TQftcBepfKMlpgmjPV5HHQ_7s8XgFHr';
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+console.log('Supabase terhubung:', !!supabase);
+</script></script>
 </body>
 </html>
